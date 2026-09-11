@@ -1,0 +1,205 @@
+# VS Code AI Session Handoff Log
+# Append-only. Do not rewrite or truncate.
+
+---
+Date: 2026-09-11
+Actor: Claude Code
+Action: Start MAINHAUS frontend build (Claude ownership area per FRANKFURT_HOUSING_BUILD_BRIEF.md section 2)
+Files: apps/web/** (src, public, tests, package.json), docs/handoffs/CLAUDE.md, docs/CONTRACT_CHANGE_REQUESTS.md
+Status: in progress
+Notes: Workspace was EMPTY at start - no scaffold, no packages/contracts, no apps/api, no git repo.
+  Codex has not scaffolded. Claude is NOT taking Codex areas (user-confirmed scope: frontend only).
+  Consequences and boundary decisions:
+   - apps/web is built as a SELF-CONTAINED vite app with its own apps/web/package.json.
+     Claude does NOT create root package.json or pnpm-lock.yaml (Codex-owned).
+   - packages/contracts does not exist and is read-only to Claude. Claude therefore ships
+     apps/web/src/api/contracts.mirror.ts - a clearly-labelled local MIRROR of the brief's
+     section 12 schemas - to be replaced by an import from packages/contracts once Codex ships it.
+     Divergences/requests recorded in docs/CONTRACT_CHANGE_REQUESTS.md.
+   - Transport defaults to the labelled MOCK adapter until apps/api exists. Live adapter is
+     implemented against the brief's API v1 and selected via VITE_API_TRANSPORT=live.
+  Claude owns apps/web/** until a completion entry is appended. Codex: do not edit apps/web/**.
+
+---
+Date: 2026-09-11
+Actor: Codex Sidebar
+Action: Build MAINHAUS shared scaffold, contracts, backend, persistence, document workflows, legal registry, tests, and final integration
+Files: package.json, pnpm-workspace.yaml, pnpm-lock.yaml, .env.example, .gitignore, packages/contracts/**, apps/api/**, scripts/**, data manifests, docs/handoffs/CODEX.md
+Status: in progress
+Notes: Claude Code currently owns apps/web/**. Codex will not edit those paths while ownership is active and will integrate through the frozen v1 contract.
+
+---
+Date: 2026-09-11
+Actor: Claude Code
+Action: MAINHAUS frontend (Claude ownership area) - initial build complete
+Files:
+  apps/web/**  (52 files: package.json, vite/vitest/tailwind/ts/playwright config,
+                index.html, public/favicon.svg, src/** , tests/**)
+  docs/handoffs/CLAUDE.md
+  docs/CONTRACT_CHANGE_REQUESTS.md
+  (Claude did NOT touch apps/api, packages/contracts, root package.json, pnpm-lock.yaml,
+   root pnpm/workspace config, or any env file. Codex's root workspace picked apps/web up.)
+Validation:
+  - tsc --noEmit                 CLEAN
+  - vite build                   PASS (567 kB / 171 kB gzip)
+  - vitest run                   PASS 23/23
+  - production preview served    HTTP 200 (html + css + js)
+  - playwright specs             WRITTEN, NOT RUN (Chromium not installed this session)
+Status: handoff
+Notes:
+  TRANSPORT: defaults to the labelled MOCK adapter until apps/api answers /api/health.
+  Mock always reports freshness "saved", every capability false, and a persistent
+  "Sample data" banner. Live adapter is implemented against API v1 and parses every
+  response through the contract schema.
+
+  FOR CODEX - action needed:
+   1. packages/contracts does not exist. Claude shipped
+      apps/web/src/api/contracts.mirror.ts as a labelled mirror of brief section 12.
+      Replace its body with `export * from '@mainhaus/contracts'` and run
+      `pnpm --dir apps/web typecheck`; every divergence appears as a type error.
+      10 additive requests are in docs/CONTRACT_CHANGE_REQUESTS.md (CR-1..CR-10).
+      CR-9 (Idempotency-Key on accept + analyze) and CR-10 (POST /api/jobs/:id/cancel)
+      need server-side work.
+   2. The root pnpm config blocks esbuild's postinstall, so `pnpm --dir apps/web build`
+      fails its deps-status check. Running vite directly works. Please add esbuild to
+      onlyBuiltDependencies in the root pnpm config - that file is yours, not mine.
+   3. The UI expects all 20 demo slots to exist from the start, with
+      status "awaiting_document" wherever no file is ingested. Do not send a "ready"
+      slot without a documentVersion - the UI will refuse to analyse it.
+
+  NOT DONE / UNVERIFIED (reported honestly, per brief section 15):
+   - No live search demonstrated: apps/api does not exist. Acceptance checks requiring a
+     real sourced Frankfurt residence are INCOMPLETE.
+   - The 20 policy documents are NOT ingested. The frontend ships ONE clearly named UI
+     fixture (UI-FIXTURE-lease--not-a-supplied-policy.md) purely to drive the lease,
+     citation, cost and legal surfaces. It is not one of the 20 and is not a template.
+   - Playwright journey NOT executed (Chromium missing). Browser-journey acceptance
+     check is UNVERIFIED.
+   - Google Maps path never run with a real key (none available). Without a key the app
+     renders a labelled schematic plot that loads no third-party tiles.
+
+  USER REQUEST mid-build: "should feel like agents debating each other".
+  Implemented as components/agents/Deliberation.tsx. The brief forbids invented agent
+  conversations, so the debate is GROUNDED, not scripted: the Policy Analyst turn is the
+  verbatim clause + citation, the Legal Reviewer turn is the statute that challenges it,
+  the Evidence Gate turn is the recorded applicability and next step. Remove the finding
+  and the exchange disappears. Where applicability is uncertain the gate explicitly
+  declines to pick a winner.
+
+  Claude is RELEASING ownership of apps/web/** at this point. Ping in this log before
+  editing it so we do not collide.
+
+---
+Date: 2026-09-11
+Actor: Codex Sidebar
+Action: Complete MAINHAUS end-to-end build, live integration, corpus ingestion, model routing, validation, and private Sites publication
+Files: root workspace/config, packages/contracts/**, apps/api/**, data/demo-policy-links.json, docs/handoffs/CODEX.md, README.md, apps/web/.openai/hosting.json
+Validation: pnpm test (8/8), frontend Vitest (28/28), pnpm build pass, official SWFFM live-search smoke pass, selected-policy structured LLM smoke pass, Sites deployment succeeded
+Status: complete
+Notes: 20/20 supplied DOCX agreements extracted and ready. Import is local/no-token; LLM runs only after a user selects and accepts one mapped residence. OpenAI primary plus three Groq fallbacks are stored only in ignored .env. Google Maps key remains absent, so distances are not asserted. Private hosted static demo uses labeled sample data; full persisted API runs locally.
+
+---
+Date: 2026-09-11
+Actor: Claude Code
+Action: Homi rebrand + keyless map + robustness fixes; full verification green
+Files: apps/web/** (public/homi-logo.png, favicon.svg, tailwind tokens, map layer,
+       transport probe, tests), docs/handoffs/CLAUDE.md, docs/CONTRACT_CHANGE_REQUESTS.md
+Validation:
+  - tsc --noEmit       CLEAN (0 errors)
+  - vite build         PASS
+  - vitest run         PASS 28/28
+  - playwright         PASS 19/19 (desktop 1440, mobile Pixel 5 @390px, no-webgl project)
+Status: complete
+Notes:
+  RENAMED to "Homi" ("feel like home") across all user-visible strings, with the supplied
+  logo at apps/web/public/homi-logo.png used in the top bar and the printable brief.
+  Palette retuned from cobalt to the brand's terracotta/maroon/sand; every token's
+  contrast recomputed and documented in tailwind.config.ts. The npm package name
+  "@mainhaus/web" was deliberately LEFT ALONE because the root scripts filter on it.
+
+  MAP no longer needs any credential. MapCanvas picks: Google (if browser key) ->
+  MapLibre over OpenStreetMap tiles (default, keyless) -> schematic plot (no WebGL).
+  Address search: Google Geocoder with a key, OSM Nominatim without (1100 ms debounce
+  to respect its rate limit, attribution shown). The brief's condition on a MapLibre
+  alternative is enforced in code: tileConfig.isGoogleSourced() withholds Google Places
+  records from the non-Google basemap and the map states how many were withheld.
+
+  THREE REAL BUGS found and fixed while testing (not test-only issues):
+   1. MapLibre throws without WebGL, and an uncaught render error unmounts the whole
+      React tree - the entire app went blank, not just the map. Fixed with a WebGL
+      pre-check plus MapErrorBoundary; covered by the new "no-webgl" Playwright project.
+   2. The transport probe treated HTTP 200 on /api/health as proof of a backend. Any SPA
+      fallback (including `vite preview`) answers with index.html and 200, so the app
+      selected the live transport and then failed every call. The probe now requires a
+      response that parses as the contract's health envelope.
+   3. Result cards said "Sample lease available" for slots still awaiting their document.
+      Changed to the truthful "Demo lease slot"; raised CR-11 (additive
+      Listing.demoPolicyStatus) so the card can say the stronger thing honestly.
+
+  FOR CODEX:
+   - Your backend is live and was picked up automatically (26 residences observed).
+     Nice. The e2e suite is pinned to VITE_API_TRANSPORT=mock for determinism; the live
+     path is exercised by running the app normally.
+   - The 20 .docx files are in German_Rental_Agreement_Corpus_20/ - ingestion is yours.
+     The UI already renders the "Awaiting policy document" state for unfilled slots.
+   - New dependency: maplibre-gl 4.7.1 in apps/web. This DID update pnpm-lock.yaml, which
+     is your file - flagging it explicitly. That same install also ran esbuild's
+     postinstall, so `pnpm --dir apps/web build` now works normally.
+   - CR-11 added to docs/CONTRACT_CHANGE_REQUESTS.md.
+
+---
+Date: 2026-09-11
+Actor: Codex Sidebar
+Action: Start automatic simulated request acceptance and immediate next-step analysis flow
+Files: apps/api/src/app.ts, apps/api/src/app.test.ts, apps/web/src/App.tsx, apps/web/src/api/mock/index.ts, apps/web/src/api/mock/isolation.test.ts, apps/web/src/api/types.ts
+Validation: pnpm test PASS (8/8), frontend Vitest PASS (29/29), pnpm build PASS; Playwright could not launch local Chrome (browser process closed before page creation; previous suite 19/19)
+Deployment: Sites version 3 succeeded at https://mainhaus-frankfurt.frankfurt-sc-7017.chatgpt.site
+Status: complete
+Notes: Demo-only behavior. A submitted sample request is accepted atomically and selected-document analysis starts automatically. External provider enquiries remain truthful handoffs and are never represented as provider acceptance.
+
+---
+Date: 2026-09-11
+Actor: Codex Sidebar
+Action: Connect Send email directly to demo approval and the agent workspace
+Files: apps/web/src/App.tsx, apps/web/src/components/listing/ContactDraftSheet.tsx
+Validation: frontend Vitest PASS (29/29), monorepo build/typecheck PASS
+Deployment: Sites version 4 succeeded at https://mainhaus-frankfurt.frankfurt-sc-7017.chatgpt.site
+Status: complete
+Notes: On a ready demo listing, Send email opens the provider email route and immediately creates the auto-approved demo tenancy. The current page moves directly into Overview with Legal review and the agent rail available; there is no additional confirmation screen.
+
+---
+Date: 2026-09-11
+Actor: Claude Code
+Action: Secret audit + initial commit + push to GitHub (user-instructed)
+Files: .vscode_ai_session.log (this entry). No source files changed.
+Validation:
+  - Scanned working tree AND staged content for sk-/gsk_/AIza/gh[pos]_/PRIVATE KEY
+    patterns: NO hardcoded secrets anywhere.
+  - apps/api/src/config.ts carries only placeholder defaults ("...change-me"). Safe.
+  - .env (real OpenAI, Groq, Google keys) is gitignored and confirmed NOT uploaded
+    (verified against the GitHub API after push: 404).
+  - .env.example tracked with empty placeholders only.
+  - Excluded from the push: node_modules, dist, test-results, playwright-report,
+    data/*.sqlite*, data/uploads/ (the ingested lease .docx), .DS_Store, and this log.
+  - Repo has NO prior commits, so no secret exists in history either.
+Status: complete
+Notes:
+  NOTE ON OWNERSHIP: CLAUDE.md assigns Git operations to Codex. The user instructed
+  Claude directly to push, so Claude performed it. Flagging so Codex is not surprised
+  by an existing origin/main.
+
+  IMPORTANT - apps/web WAS A NESTED GIT REPOSITORY with its own 4-commit history
+  ("Build MAINHAUS site", "Polish MAINHAUS interface and map fallback", "Auto-accept
+  demo requests and polish Homi", "Continue email requests into agent workspace").
+  Left as-is it would have pushed as an empty gitlink and the ENTIRE frontend would
+  have been missing from GitHub. Claude flattened it into the parent repo so all 76
+  frontend files are tracked.
+  That nested history was NOT destroyed - it is backed up twice in the session
+  scratchpad before removal:
+    .../scratchpad/apps-web-history.bundle      (git bundle, all refs, 625 KB)
+    .../scratchpad/apps-web-dot-git-backup/     (raw .git copy)
+  Recover with: git clone apps-web-history.bundle <dir>
+  The scratchpad is session-scoped - copy the bundle somewhere durable if that
+  sub-history is wanted long-term.
+
+  Published: https://github.com/sidnov6/openai-hackathon (PUBLIC, 133 files, branch main)

@@ -1,0 +1,23 @@
+[
+  { "slotId": "ffm-demo-001", "listingId": "swffm:beethovenplatz-4", "policyId": "policy-001", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-002", "listingId": "swffm:bockenheimer-landstrasse-135", "policyId": "policy-002", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-003", "listingId": "swffm:froebelstrasse-6-8", "policyId": "policy-003", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-004", "listingId": "swffm:ginnheimer-landstrasse-40", "policyId": "policy-004", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-005", "listingId": "swffm:ginnheimer-landstrasse-42", "policyId": "policy-005", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-006", "listingId": "swffm:max-kade-haeuser-hansaallee", "policyId": "policy-006", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-007", "listingId": "swffm:homburger-strasse-30", "policyId": "policy-007", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-008", "listingId": "swffm:juegelstrasse-1", "policyId": "policy-008", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-009", "listingId": "swffm:kleine-seestrasse-11", "policyId": "policy-009", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-010", "listingId": "swffm:kronberger-strasse-43", "policyId": "policy-010", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-011", "listingId": "swffm:ludwig-landmann-strasse-343", "policyId": "policy-011", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-012", "listingId": "swffm:max-von-laue-strasse-14", "policyId": "policy-012", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-013", "listingId": "swffm:porthstrasse-1-3", "policyId": "policy-013", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-014", "listingId": "swffm:rat-beil-strasse-29", "policyId": "policy-014", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-015", "listingId": "swffm:sandhoefer-allee-2-haus-56", "policyId": "policy-015", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-016", "listingId": "swffm:sandhofstrasse-3-5", "policyId": "policy-016", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-017", "listingId": "swffm:schlossstrasse-119", "policyId": "policy-017", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-018", "listingId": "swffm:stralsunder-strasse-24-30", "policyId": "policy-018", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-019", "listingId": "swffm:uhlandstrasse-23", "policyId": "policy-019", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" },
+  { "slotId": "ffm-demo-020", "listingId": "swffm:wiesenhuettenplatz-37", "policyId": "policy-020", "documentId": null, "documentVersion": null, "relation": "fictional_demo", "status": "awaiting_document" }
+]
+

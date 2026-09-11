@@ -1,0 +1,23 @@
+{
+  "name": "mainhaus",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names api,web --prefix-colors blue,magenta \"pnpm --filter @mainhaus/api dev\" \"pnpm --filter @mainhaus/web dev\"",
+    "dev:api": "pnpm --filter @mainhaus/api dev",
+    "dev:web": "pnpm --filter @mainhaus/web dev",
+    "build": "pnpm -r --if-present build",
+    "test": "pnpm --filter @mainhaus/contracts test && pnpm --filter @mainhaus/api test",
+    "test:e2e": "pnpm --filter @mainhaus/web test:e2e",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "import:policies": "pnpm --filter @mainhaus/api import:policies"
+  },
+  "devDependencies": {
+    "concurrently": "9.2.1",
+    "typescript": "5.9.2"
+  }
+}

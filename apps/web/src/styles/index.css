@@ -1,0 +1,144 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --rail-width: 380px;
+    --topbar-height: 56px;
+    /* Real viewport unit that survives mobile browser chrome. Set in useViewportUnit(). */
+    --app-vh: 1vh;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans text-body antialiased;
+    margin: 0;
+    /* Prevent rubber-band scroll fighting the map on iOS. */
+    overscroll-behavior-y: none;
+  }
+
+  /* Tabular numerals for euros and dates (brief section 4). */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  /* Focus is always visible and never removed. 2px cobalt ring with a white gap so it
+     reads on both white surfaces and the map. */
+  :focus-visible {
+    outline: 2px solid theme('colors.primary.DEFAULT');
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Only suppress the ring for pointer users; keyboard users always keep it. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background: theme('colors.primary.tint');
+    color: theme('colors.ink.DEFAULT');
+  }
+
+  /* Consistent, quiet scrollbars in the rail and sheets. */
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.line.strong') transparent;
+  }
+  .scroll-thin::-webkit-scrollbar { width: 10px; height: 10px; }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background-color: theme('colors.line.strong');
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  .scroll-thin::-webkit-scrollbar-track { background: transparent; }
+}
+
+@layer components {
+  /* Skip link - first tab stop, visually hidden until focused. */
+  .skip-link {
+    @apply absolute left-3 top-3 z-[100] -translate-y-[200%] rounded bg-ink px-3 py-2 text-ui font-semibold text-white shadow-raised transition-transform;
+  }
+  .skip-link:focus {
+    @apply translate-y-0;
+  }
+
+  /* Loading skeleton that matches final geometry. Never shows a fabricated number. */
+  .skeleton {
+    @apply relative overflow-hidden rounded bg-line-soft;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+    animation: shimmer 1.5s infinite;
+  }
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+
+  /* The original German clause, always preserved beside its explanation. */
+  .clause-quote {
+    @apply border-l-[3px] border-line-strong bg-surface-sunken px-3 py-2 text-ui leading-[22px] text-ink-soft;
+    font-feature-settings: 'liga' 1;
+  }
+}
+
+/* Reduced motion: remove all non-essential movement, keep opacity changes subtle. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .skeleton::after {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Print: the exportable tenancy brief. The browser saves this to PDF.
+   Everything that is not the brief is removed; citations become visible text.
+   --------------------------------------------------------------------------- */
+@media print {
+  body {
+    background: #fff;
+  }
+  .print-hide,
+  [data-print='hide'] {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-sheet {
+    box-shadow: none !important;
+    border: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  a[data-print-url]::after {
+    content: ' (' attr(data-print-url) ')';
+    font-size: 10px;
+    color: #5a6b84;
+    word-break: break-all;
+  }
+  .page-break {
+    break-before: page;
+  }
+  .avoid-break {
+    break-inside: avoid;
+  }
+}
+
+.print-only {
+  display: none;
+}
